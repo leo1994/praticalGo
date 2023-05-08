@@ -46,7 +46,32 @@ func moveAll(ms []mover, x, y int) {
 	for _, m := range ms {
 		m.Move(x, y)
 	}
+	k := Jade
+
+	fmt.Println("K:", k)
 }
+
+const (
+	Jade Key = iota + 1
+	Copper
+	Crystal
+)
+
+func (k Key) String() string {
+	switch k {
+	case Jade:
+		return "Jade"
+	case Copper:
+		return "Cooper"
+	case Crystal:
+		return "crystal"
+	}
+
+	return fmt.Sprintf("<Key %d", k)
+
+}
+
+type Key byte
 
 // func NewItem(x, y int) Item{}
 // func NewItem(x, y int) *Item{}

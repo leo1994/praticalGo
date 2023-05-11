@@ -36,6 +36,12 @@ func main() {
 	for _, m := range ms {
 		fmt.Printf("m: %#v\n", m)
 	}
+
+	p1.FoundKey(Jade)
+	fmt.Println(p1.Keys)
+
+	p1.FoundKey(Jade)
+	fmt.Println(p1.Keys)
 }
 
 type mover interface {
@@ -49,12 +55,14 @@ func moveAll(ms []mover, x, y int) {
 	k := Jade
 
 	fmt.Println("K:", k)
+
 }
 
 const (
 	Jade Key = iota + 1
 	Copper
 	Crystal
+	invalidKey
 )
 
 func (k Key) String() string {
@@ -64,7 +72,7 @@ func (k Key) String() string {
 	case Copper:
 		return "Cooper"
 	case Crystal:
-		return "crystal"
+		return "Crystal"
 	}
 
 	return fmt.Sprintf("<Key %d", k)
@@ -89,6 +97,28 @@ type Key byte
 type Player struct {
 	Item
 	Name string
+	Keys []Key
+}
+
+func (p *Player) FoundKey(k Key) error {
+	if k < Jade || k >= invalidKey {
+		return fmt.Errorf("invalid key: %#v", k)
+	}
+	if !containsKey(p.Keys, k) {
+		p.Keys = append(p.Keys, k)
+	}
+
+	return nil
+}
+
+func containsKey(keys []Key, k Key) bool {
+	for _, k2 := range keys {
+		if k2 == k {
+			return true
+		}
+	}
+
+	return false
 }
 
 // i is called "receiver"

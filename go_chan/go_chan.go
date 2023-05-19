@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func main() {
@@ -14,6 +15,8 @@ func main() {
 		go func() {
 			fmt.Println(i)
 		}()
+
+		time.Sleep(10 * time.Millisecond)
 
 		// FIX 1: Use a parameter
 		// go func(n int) {
@@ -58,6 +61,38 @@ func main() {
 	fmt.Printf("closed: %#v (ok=%v)\n", msg, ok)
 
 	// ch <- "hi" // ch is closed
+
+	values := []int{10, 2, 13, 7, 1, 24, 9, 5}
+
+	fmt.Println(sleepSort(values))
+
+}
+
+/*
+	For every value "n" in values, spin a goroutine that will
+	- spleep "n" milliseconds
+	- Send "n" over a channel
+
+IN the funciton body, collect values from the channel to a slice and return it
+*/
+
+func sleepSort(values []int) []int {
+	ch := make(chan int)
+	for _, v := range values {
+		v := v
+		go func() {
+			time.Sleep(time.Duration(v) * time.Millisecond)
+			ch <- v
+		}()
+	}
+
+	var out []int
+	// for i := 0; i < len(values); i++
+	for range values {
+		n := <-ch
+		out = append(out, n)
+	}
+	return out
 }
 
 /* Channel Semantics
